@@ -9,66 +9,50 @@ import { $styles, type ThemedStyle } from "@/theme"
 import { useHeader } from "../utils/useHeader"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useAppTheme } from "@/utils/useAppTheme"
+import { DemoTabScreenProps } from "@/navigators/DemoNavigator"
 
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
 
 interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(_props) {
-  const { themed, theme } = useAppTheme()
+export const WelcomeScreen: FC<DemoTabScreenProps<"Welcome">> = observer(
+  function WelcomeScreen(_props) {
+    const { themed, theme } = useAppTheme()
 
-  const { navigation } = _props
-  const {
-    authenticationStore: { logout },
-  } = useStores()
+    const { navigation } = _props
+    const {
+      authenticationStore: { logout },
+    } = useStores()
 
-  function goNext() {
-    navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
-  }
+    function goNext() {
+      navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
+    }
 
-  useHeader(
-    {
-      rightTx: "common:logOut",
-      onRightPress: logout,
-    },
-    [logout],
-  )
+    useHeader(
+      {
+        rightTx: "common:logOut",
+        onRightPress: logout,
+      },
+      [logout],
+    )
 
-  const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
+    const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-  return (
-    <Screen preset="fixed" contentContainerStyle={$styles.flex1}>
-      <View style={themed($topContainer)}>
-        <Image style={themed($welcomeLogo)} source={welcomeLogo} resizeMode="contain" />
-        <Text
-          testID="welcome-heading"
-          style={themed($welcomeHeading)}
-          tx="welcomeScreen:readyForLaunch"
-          preset="heading"
-        />
-        <Text tx="welcomeScreen:exciting" preset="subheading" />
-        <Image
-          style={$welcomeFace}
-          source={welcomeFace}
-          resizeMode="contain"
-          tintColor={theme.isDark ? theme.colors.palette.neutral900 : undefined}
-        />
-      </View>
-
-      <View style={themed([$bottomContainer, $bottomContainerInsets])}>
-        <Text tx="welcomeScreen:postscript" size="md" />
-
-        <Button
-          testID="next-screen-button"
-          preset="reversed"
-          tx="welcomeScreen:letsGo"
-          onPress={goNext}
-        />
-      </View>
-    </Screen>
-  )
-})
+    return (
+      <Screen preset="fixed" contentContainerStyle={$styles.flex1}>
+        <View style={themed($topContainer)}>
+          <Text
+            testID="welcome-heading"
+            style={themed($welcomeHeading)}
+            tx="welcomeScreen:readyForLaunch"
+            preset="heading"
+          />
+        </View>
+      </Screen>
+    )
+  },
+)
 
 const $topContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexShrink: 1,

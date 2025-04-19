@@ -38,7 +38,7 @@ const es: Translations = {
     logIn: "Iniciar sesión",
     enterDetails:
       "Ingresa tus datos a continuación para desbloquear información ultra secreta. Nunca vas a adivinar lo que te espera al otro lado. O quizás si lo harás; la verdad no hay mucha ciencia alrededor.",
-    emailFieldLabel: "Email",
+    uniIdFieldLabel: "ID",
     passwordFieldLabel: "Contraseña",
     emailFieldPlaceholder: "Ingresa tu email",
     passwordFieldPlaceholder: "Contraseña super secreta aquí",

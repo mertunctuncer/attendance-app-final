@@ -12,9 +12,8 @@ export const AuthenticationStoreModel = types
     },
     get validationError() {
       if (store.authEmail.length === 0) return "can't be blank"
-      if (store.authEmail.length < 6) return "must be at least 6 characters"
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(store.authEmail))
-        return "must be a valid email address"
+      if (store.authEmail.length !== 8) return "student id is not valid"
+      if (isNaN(Number(store.authEmail))) return "student id is not valid"
       return ""
     },
   }))

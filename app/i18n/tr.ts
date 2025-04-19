@@ -10,7 +10,7 @@ const en = {
   welcomeScreen: {
     postscript:
       "psst  — This probably isn't what your app looks like. (Unless your designer handed you these screens, and in that case, ship it!)",
-    readyForLaunch: "HOME SCREEN",
+    readyForLaunch: "Your app, almost ready for launch!",
     exciting: "(ohh, this is exciting!)",
     letsGo: "Let's go!",
   },
@@ -34,13 +34,14 @@ const en = {
   },
   loginScreen: {
     logIn: "Log In",
-    enterDetails: "Sign in to continue.",
+    enterDetails:
+      "Enter your details below to unlock top secret info. You'll never guess what we've got waiting. Or maybe you will; it's not rocket science here.",
     uniIdFieldLabel: "Student ID",
     passwordFieldLabel: "Password",
-    uniIdFieldPlaceholder: "Enter your email address",
+    emailFieldPlaceholder: "Enter your email address",
     passwordFieldPlaceholder: "Super secret password here",
-    tapToLogIn: "LOG IN",
-    hint: "Hint: Student id is 8 characters.",
+    tapToLogIn: "Tap to log in!",
+    hint: "Hint: you can use any email address and your favorite password :)",
   },
   demoNavigator: {
     componentsTab: "Components",

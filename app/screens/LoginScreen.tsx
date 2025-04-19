@@ -28,8 +28,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   useEffect(() => {
     // Here is where you could fetch credentials from keychain or storage
     // and pre-fill the form fields.
-    setAuthEmail("ignite@infinite.red")
-    setAuthPassword("ign1teIsAwes0m3")
+    setAuthEmail("22412123")
+    setAuthPassword("password")
 
     // Return a "cleanup" function that React will run when the component unmounts
     return () => {
@@ -89,11 +89,10 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         onChangeText={setAuthEmail}
         containerStyle={themed($textField)}
         autoCapitalize="none"
-        autoComplete="email"
         autoCorrect={false}
         keyboardType="email-address"
-        labelTx="loginScreen:emailFieldLabel"
-        placeholderTx="loginScreen:emailFieldPlaceholder"
+        labelTx="loginScreen:uniIdFieldLabel"
+        placeholderTx="loginScreen:uniIdFieldPlaceholder"
         helper={error}
         status={error ? "error" : undefined}
         onSubmitEditing={() => authPasswordInput.current?.focus()}
@@ -131,6 +130,7 @@ const $screenContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 })
 
 const $logIn: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  textAlign: "center",
   marginBottom: spacing.sm,
 })
 
