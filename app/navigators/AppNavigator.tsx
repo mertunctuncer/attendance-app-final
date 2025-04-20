@@ -71,13 +71,9 @@ const AppStack = observer(function AppStack() {
       initialRouteName={isAuthenticated ? "Demo" : "Login"}
     >
       {isAuthenticated ? (
-        <>
-          <Stack.Screen name="Demo" component={DemoNavigator} />
-        </>
+        <Stack.Screen name="Demo" component={DemoNavigator} />
       ) : (
-        <>
-          <Stack.Screen name="Login" component={Screens.LoginScreen} />
-        </>
+        <Stack.Screen name="Login" component={Screens.LoginScreen} />
       )}
 
       {/** 🔥 Your screens go here */}

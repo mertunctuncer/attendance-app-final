@@ -4,16 +4,18 @@ import { TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "@/i18n"
-import { DemoDebugScreen, WelcomeScreen } from "../screens";
+import { DemoDebugScreen, WelcomeScreen } from "../screens"
 import type { ThemedStyle } from "@/theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { useAppTheme } from "@/utils/useAppTheme"
+import { CameraScreen } from "@/screens/CameraScreen"
 
 export type DemoTabParamList = {
   DemoCommunity: undefined
   DemoShowroom: { queryIndex?: string; itemIndex?: string }
   DemoDebug: undefined
   Welcome: undefined
+  Camera: undefined
   DemoPodcastList: undefined
 }
 
@@ -61,7 +63,7 @@ export function DemoNavigator() {
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ focused }) => (
-            <Icon icon="menu" color={focused ? colors.tint : colors.tintInactive} size={30} />
+            <Icon icon="github" color={focused ? colors.tint : colors.tintInactive} size={30} />
           ),
         }}
       />
@@ -72,6 +74,16 @@ export function DemoNavigator() {
           tabBarLabel: translate("demoNavigator:debugTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="debug" color={focused ? colors.tint : colors.tintInactive} size={30} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Camera"
+        component={CameraScreen}
+        options={{
+          tabBarLabel: "Camera",
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="settings" color={focused ? colors.tint : colors.tintInactive} size={30} />
           ),
         }}
       />
