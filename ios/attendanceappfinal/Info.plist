@@ -55,6 +55,15 @@
     <string>$(PRODUCT_NAME) needs access to your Camera.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your microphone</string>
+    
+    <!-- Bluetooth izinleri -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Derslere katılımınızı takip etmek için Bluetooth kullanmamız gerekmektedir.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Derslere katılımınızı takip etmek için Bluetooth kullanmamız gerekmektedir.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Bluetooth taramasını kullanmak için konum erişimi gerekmektedir.</string>
+    
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
