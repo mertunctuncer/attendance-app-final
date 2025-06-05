@@ -4,7 +4,7 @@ import { TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "@/i18n"
-import { DemoDebugScreen, WelcomeScreen, AttendanceScreen } from "../screens"
+import { DemoDebugScreen, WelcomeScreen } from "../screens"
 import type { ThemedStyle } from "@/theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { useAppTheme } from "@/utils/useAppTheme"
@@ -16,7 +16,6 @@ export type DemoTabParamList = {
   DemoDebug: undefined
   Welcome: undefined
   Camera: undefined
-  Attendance: undefined
   DemoPodcastList: undefined
 }
 
@@ -85,16 +84,6 @@ export function DemoNavigator() {
           tabBarLabel: "Camera",
           tabBarIcon: ({ focused }) => (
             <Icon icon="settings" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Attendance"
-        component={AttendanceScreen}
-        options={{
-          tabBarLabel: "Yoklama",
-          tabBarIcon: ({ focused }) => (
-            <Icon icon="check" color={focused ? colors.tint : colors.tintInactive} size={30} />
           ),
         }}
       />

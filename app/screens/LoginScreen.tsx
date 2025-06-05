@@ -9,7 +9,8 @@ import { useAppTheme } from "@/utils/useAppTheme"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
-export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
+export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(props) {
+  const { navigation } = props
   const authPasswordInput = useRef<TextInput>(null)
 
   const [authPassword, setAuthPassword] = useState("")
@@ -54,6 +55,12 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
     // We'll mock this with a fake token.
     setAuthToken(String(Date.now()))
+    
+    // Navigate to Home screen manually
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Home" }],
+    })
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -120,6 +127,12 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         preset="reversed"
         onPress={login}
       />
+      
+      <Text
+        text="Don't have an account? Register here"
+        style={themed($registerLink)}
+        onPress={() => navigation.navigate("Register")}
+      />
     </Screen>
   )
 })
@@ -149,4 +162,10 @@ const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xs,
+})
+
+const $registerLink: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  textAlign: "center",
+  marginTop: spacing.lg,
+  color: colors.tint,
 })

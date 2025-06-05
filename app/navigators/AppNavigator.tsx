@@ -14,6 +14,7 @@ import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { useAppTheme, useThemeProvider } from "@/utils/useAppTheme"
 import { ComponentProps } from "react"
+import React from "react"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -31,6 +32,14 @@ import { ComponentProps } from "react"
 export type AppStackParamList = {
   Welcome: undefined
   Login: undefined
+  Register: undefined
+  Home: undefined
+  Attend: undefined
+  PersonalInfo: undefined
+  Test: undefined
+  Instructor: undefined
+  Schedule: undefined
+  Absence: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
@@ -68,12 +77,24 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Demo" : "Login"}
+      initialRouteName={isAuthenticated ? "Home" : "Login"}
     >
       {isAuthenticated ? (
-        <Stack.Screen name="Demo" component={DemoNavigator} />
+        <>
+          <Stack.Screen name="Test" component={Screens.TestScreen} />
+          <Stack.Screen name="Home" component={Screens.HomeScreen} />
+          <Stack.Screen name="Attend" component={Screens.AttendScreen} />
+          <Stack.Screen name="PersonalInfo" component={Screens.PersonalInformationScreen} />
+          <Stack.Screen name="Instructor" component={Screens.InstructorScreen} />
+          <Stack.Screen name="Schedule" component={Screens.ScheduleScreen} />
+          <Stack.Screen name="Absence" component={Screens.AbsenceScreen} />
+          <Stack.Screen name="Demo" component={DemoNavigator} />
+        </>
       ) : (
-        <Stack.Screen name="Login" component={Screens.LoginScreen} />
+        <>
+          <Stack.Screen name="Login" component={Screens.LoginScreen} />
+          <Stack.Screen name="Register" component={Screens.RegisterScreen} />
+        </>
       )}
 
       {/** 🔥 Your screens go here */}
@@ -93,7 +114,11 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
 
   return (
     <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
-      <NavigationContainer ref={navigationRef} theme={navigationTheme} {...props}>
+      <NavigationContainer 
+        ref={navigationRef} 
+        theme={navigationTheme} 
+        {...props}
+      >
         <AppStack />
       </NavigationContainer>
     </ThemeProvider>

@@ -3,6 +3,7 @@
 #include <BLEServer.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
+#include <map>
 
 // UUID'ler - bu değerleri mobil uygulama tarafında da kullanın
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -14,8 +15,8 @@ BLEService *pService = nullptr;
 BLECharacteristic *pCharacteristic = nullptr;
 BLEScan *pBLEScan = nullptr;
 
-// Algılanan öğrencileri depolamak için
-std::map<std::string, std::string> detectedStudents;
+// Algılanan öğrencileri depolamak için - String kullanıyoruz
+std::map<String, String> detectedStudents;
 
 // BLE tarayıcı callback'i
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
@@ -26,7 +27,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
         Serial.printf("Cihaz bulundu: %s \n", advertisedDevice.toString().c_str());
 
         // Eğer bu bir öğrenci cihazı ise, MAC adresini kaydet
-        std::string deviceAddress = advertisedDevice.getAddress().toString();
+        String deviceAddress = advertisedDevice.getAddress().toString();
 
         // Daha önce kaydedilmemiş ise ekle
         if (detectedStudents.find(deviceAddress) == detectedStudents.end())
@@ -58,19 +59,19 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *pCharacteristic)
     {
-        std::string value = pCharacteristic->getValue();
+        String value = pCharacteristic->getValue().c_str();
         if (value.length() > 0)
         {
             Serial.print("Öğrenci kimliği alındı: ");
-            Serial.println(value.c_str());
+            Serial.println(value);
 
             // Bağlanan cihazın MAC adresini alın
             // Not: Bu işlev doğrudan mevcut olmayabilir, cihaz bağlantısında saklamanız gerekebilir
             // Bu sadece örnek bir kavramdır
-            std::string connectedDeviceAddress = ""; // Bağlanan cihazın adresini alın
+            String connectedDeviceAddress = ""; // Bağlanan cihazın adresini alın
 
             // Öğrenci kimliğini MAC adresi ile ilişkilendirin
-            if (!connectedDeviceAddress.empty() && detectedStudents.find(connectedDeviceAddress) != detectedStudents.end())
+            if (connectedDeviceAddress.length() > 0 && detectedStudents.find(connectedDeviceAddress) != detectedStudents.end())
             {
                 detectedStudents[connectedDeviceAddress] = value;
                 Serial.printf("Öğrenci kaydedildi: %s -> %s\n", connectedDeviceAddress.c_str(), value.c_str());
@@ -127,11 +128,11 @@ void loop()
 {
     // Periyodik olarak öğrenci cihazlarını tara (10 saniyede bir)
     Serial.println("Öğrenci cihazları taranıyor...");
-    BLEScanResults foundDevices = pBLEScan->start(5, false); // 5 saniye tara
+    BLEScanResults *foundDevices = pBLEScan->start(5, false); // 5 saniye tara
 
     // Algılanan cihazları listele
     Serial.print("Algılanan cihaz sayısı: ");
-    Serial.println(foundDevices.getCount());
+    Serial.println(foundDevices->getCount());
 
     // Algılanan öğrencileri listele
     Serial.println("Algılanan öğrenciler:");
