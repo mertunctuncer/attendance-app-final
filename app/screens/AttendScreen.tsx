@@ -71,30 +71,43 @@ export const AttendScreen: FC<AttendScreenProps> = observer(function AttendScree
 
     try {
       setIsJoining(true)
-      setStatus("Joining...")
+      setStatus("Starting BLE advertising...")
 
-      // Start beacon advertising
+      // Gerçek öğrenci bilgilerini kullan (normalde login'den gelir)
       const studentId = "12345"
       const studentName = "John Doe"
 
+      console.log("🚀 Gerçek BLE advertising başlatılıyor...")
+      
+      // GERÇEK BLE ADVERTISING BAŞLAT
       const success = await bluetoothService.startAdvertising(studentId, studentName)
       
       if (success) {
         setHasJoined(true)
-        setStatus("Joined - ESP32 can see you")
+        setStatus("✅ Broadcasting Active - ESP32 detecting you!")
+        console.log("✅ BLE advertising başarılı!")
+        
+        // Test için ESP32'yi tara
+        setTimeout(async () => {
+          console.log("🔍 ESP32 taranıyor...")
+          const esp32Found = await bluetoothService.testESP32Connection()
+          if (esp32Found) {
+            setStatus("✅ ESP32 Connected & Broadcasting!")
+          }
+        }, 2000)
         
         // Automatically open camera after successful join
         setTimeout(async () => {
           await openCamera()
-        }, 1000)
+        }, 3000)
       } else {
-        setStatus("Failed to join")
-        Alert.alert("Error", "Could not join attendance. Make sure Bluetooth is enabled.")
+        setStatus("❌ Failed to start advertising")
+        Alert.alert("BLE Error", "BLE advertising başlatılamadı. Bluetooth açık mı kontrol edin.")
       }
     } catch (error) {
-      console.error("Join attendance error:", error)
-      setStatus("Join failed")
-      Alert.alert("Error", "Failed to join attendance.")
+      console.error("❌ Join attendance error:", error)
+      setStatus("❌ Join failed")
+      Alert.alert("Error", "BLE advertising hatası: " + error.message)
     } finally {
       setIsJoining(false)
     }
@@ -180,6 +193,31 @@ export const AttendScreen: FC<AttendScreenProps> = observer(function AttendScree
               </View>
             )}
           </View>
+
+          {/* Debug Buttons */}
+          {__DEV__ && (
+            <View style={$debugContainer}>
+              <Text style={$debugTitle}>Debug Functions</Text>
+              <TouchableOpacity 
+                style={$debugButton} 
+                onPress={() => bluetoothService.scanAllDevices()}
+              >
+                <Text style={$debugButtonText}>Scan All BLE Devices</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={$debugButton} 
+                onPress={() => bluetoothService.testESP32Connection()}
+              >
+                <Text style={$debugButtonText}>Test ESP32 Connection</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={$debugButton} 
+                onPress={() => bluetoothService.startAlternativeAdvertising("TEST123")}
+              >
+                <Text style={$debugButtonText}>Alternative Advertising</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {/* Main Action Button */}
           <View style={$buttonContainer}>
@@ -396,6 +434,36 @@ const $cornerBorder: ViewStyle = {
   height: 40,
   borderColor: "#FFFFFF",
   borderWidth: 3,
+}
+
+const $debugContainer: ViewStyle = {
+  marginTop: 20,
+  padding: 16,
+  backgroundColor: "#2A2A2A",
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: "#444",
+}
+
+const $debugTitle: TextStyle = {
+  fontSize: 16,
+  fontWeight: "bold",
+  marginBottom: 12,
+  color: "#FFFFFF",
+}
+
+const $debugButton: ViewStyle = {
+  backgroundColor: "#007AFF",
+  padding: 10,
+  borderRadius: 6,
+  marginBottom: 8,
+  alignItems: "center",
+}
+
+const $debugButtonText: TextStyle = {
+  color: "#FFFFFF",
+  fontSize: 14,
+  fontWeight: "500",
 }
 
 const $topLeft: ViewStyle = {
