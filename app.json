@@ -24,12 +24,29 @@
         "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
       },
-      "allowBackup": false
+      "allowBackup": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.BLUETOOTH_ADVERTISE",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ]
     },
     "ios": {
       "icon": "./assets/images/app-icon-ios.png",
       "supportsTablet": true,
-      "bundleIdentifier": "com.baskent.attendence"
+      "bundleIdentifier": "com.baskent.attendence",
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "Bu uygulama derslere katılımınızı ESP32 cihazına broadcast etmek için Bluetooth kullanır.",
+        "NSBluetoothPeripheralUsageDescription": "Yoklama sistemi için cihazınızın ESP32 tarafından algılanabilmesi için Bluetooth Peripheral mode gereklidir.",
+        "NSBluetoothAdvertisingUsageDescription": "Derslere katılımınızı ESP32 yoklama cihazına bildirmek için Bluetooth advertising gereklidir.",
+        "NSLocationWhenInUseUsageDescription": "ESP32 yoklama cihazını tespit etmek için Bluetooth taraması yapılır, bunun için konum izni gereklidir.",
+        "UIBackgroundModes": ["bluetooth-central", "bluetooth-peripheral"]
+      }
     },
     "web": {
       "favicon": "./assets/images/app-icon-web-favicon.png",

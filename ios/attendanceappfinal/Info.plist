@@ -51,48 +51,27 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
-    <key>NSCameraUsageDescription</key>
-    <string>$(PRODUCT_NAME) needs access to your Camera.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your microphone</string>
-    
-    <!-- ===== GELİŞTİRİLMİŞ BLUETOOTH İZİNLERİ ===== -->
-    <!-- BLE Advertising için gerekli izinler -->
-    <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>Bu uygulama derslere katılımınızı ESP32 cihazına broadcast etmek için Bluetooth kullanır. Yoklama sistemi için gereklidir.</string>
-    
-    <!-- BLE Peripheral mode için -->
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>Yoklama sistemi için cihazınızın ESP32 tarafından algılanabilmesi için Bluetooth Peripheral mode gereklidir.</string>
-    
-    <!-- iOS 13+ için güncel izin -->
     <key>NSBluetoothAdvertisingUsageDescription</key>
     <string>Derslere katılımınızı ESP32 yoklama cihazına bildirmek için Bluetooth advertising gereklidir.</string>
-    
-    <!-- Location izni - BLE scanning için gerekli -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Bu uygulama derslere katılımınızı ESP32 cihazına broadcast etmek için Bluetooth kullanır.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Yoklama sistemi için cihazınızın ESP32 tarafından algılanabilmesi için Bluetooth Peripheral mode gereklidir.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>$(PRODUCT_NAME) needs access to your Camera.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Bluetooth taramasını kullanmak için konum erişimi gerekmektedir. Yoklama sistemi için ESP32 cihazını bulabilmemiz gerekir.</string>
-    
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>ESP32 yoklama cihazını tespit etmek için Bluetooth taraması yapılır, bunun için konum izni gereklidir.</string>
-    
-    <!-- Background modes - BLE advertising için -->
     <key>UIBackgroundModes</key>
     <array>
       <string>bluetooth-central</string>
       <string>bluetooth-peripheral</string>
-      <string>background-processing</string>
     </array>
-    
-    <!-- BLE Capability belirtimi -->
+    <key>UILaunchStoryboardName</key>
+    <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
       <string>arm64</string>
-      <string>bluetooth-le</string>
     </array>
-    
-    <key>UILaunchStoryboardName</key>
-    <string>SplashScreen</string>
     <key>UIRequiresFullScreen</key>
     <false/>
     <key>UIStatusBarStyle</key>

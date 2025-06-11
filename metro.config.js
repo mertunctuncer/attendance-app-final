@@ -20,4 +20,9 @@ config.transformer.getTransformOptions = async () => ({
 // such as Firebase that use the extension cjs.
 config.resolver.sourceExts.push("cjs")
 
+// Add Buffer polyfill for React Native
+config.resolver.alias = {
+  buffer: require.resolve('buffer'),
+}
+
 module.exports = config

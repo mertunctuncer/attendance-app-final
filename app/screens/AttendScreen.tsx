@@ -43,22 +43,34 @@ export const AttendScreen: FC<AttendScreenProps> = observer(function AttendScree
 
   const checkBluetoothPermissions = async () => {
     try {
+      console.log('🔍 Bluetooth permissions kontrol ediliyor...')
+      
+      // Önce BLE advertiser'ın hazır olup olmadığını kontrol et
       const hasPermissions = await bluetoothService.requestPermissions()
+      console.log('📋 Bluetooth permissions:', hasPermissions)
+      
       if (!hasPermissions) {
-        setStatus("Bluetooth permission needed")
+        setStatus("❌ Bluetooth permission needed")
+        Alert.alert("Permission Required", "Bluetooth permissions are required for attendance system.")
         return
       }
 
+      console.log('🔋 Bluetooth durumu kontrol ediliyor...')
       const isEnabled = await bluetoothService.isBluetoothEnabled()
+      console.log('📶 Bluetooth enabled:', isEnabled)
+      
       if (!isEnabled) {
-        setStatus("Please enable Bluetooth")
+        setStatus("❌ Please enable Bluetooth")
+        Alert.alert("Bluetooth Required", "Please enable Bluetooth to use attendance system.")
         return
       }
 
-      setStatus("Ready to join")
+      console.log('✅ Bluetooth setup tamamlandı')
+      setStatus("✅ Ready to join")
     } catch (error) {
-      console.error("Bluetooth setup error:", error)
-      setStatus("Bluetooth setup failed")
+      console.error("❌ Bluetooth setup error:", error)
+      setStatus("❌ Bluetooth setup failed")
+      Alert.alert("Bluetooth Error", `Setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
@@ -71,7 +83,15 @@ export const AttendScreen: FC<AttendScreenProps> = observer(function AttendScree
 
     try {
       setIsJoining(true)
-      setStatus("Starting BLE advertising...")
+      setStatus("🚀 Starting BLE advertising...")
+
+      // Önce bluetooth durumunu tekrar kontrol et
+      const isEnabled = await bluetoothService.isBluetoothEnabled()
+      if (!isEnabled) {
+        setStatus("❌ Bluetooth not enabled")
+        Alert.alert("Bluetooth Required", "Please enable Bluetooth first.")
+        return
+      }
 
       // Gerçek öğrenci bilgilerini kullan (normalde login'den gelir)
       const studentId = "12345"
@@ -90,9 +110,15 @@ export const AttendScreen: FC<AttendScreenProps> = observer(function AttendScree
         // Test için ESP32'yi tara
         setTimeout(async () => {
           console.log("🔍 ESP32 taranıyor...")
-          const esp32Found = await bluetoothService.testESP32Connection()
-          if (esp32Found) {
-            setStatus("✅ ESP32 Connected & Broadcasting!")
+          try {
+            const esp32Found = await bluetoothService.testESP32Connection()
+            if (esp32Found) {
+              setStatus("✅ ESP32 Connected & Broadcasting!")
+            } else {
+              setStatus("⚠️ Broadcasting (ESP32 not found)")
+            }
+          } catch (error) {
+            console.log("ESP32 test hatası:", error)
           }
         }, 2000)
         
@@ -102,14 +128,61 @@ export const AttendScreen: FC<AttendScreenProps> = observer(function AttendScree
         }, 3000)
       } else {
         setStatus("❌ Failed to start advertising")
-        Alert.alert("BLE Error", "BLE advertising başlatılamadı. Bluetooth açık mı kontrol edin.")
+        Alert.alert("BLE Error", "BLE advertising başlatılamadı. Bluetooth ayarlarını kontrol edin.")
       }
     } catch (error) {
       console.error("❌ Join attendance error:", error)
       setStatus("❌ Join failed")
-      Alert.alert("Error", "BLE advertising hatası: " + error.message)
+      Alert.alert("Error", "BLE advertising hatası: " + (error instanceof Error ? error.message : 'Unknown error'))
     } finally {
       setIsJoining(false)
+    }
+  }
+
+  // Debug butonları için async handler'lar
+  const handleScanAllDevices = async () => {
+    try {
+      console.log('🔍 Tüm BLE cihazları taranıyor...')
+      await bluetoothService.scanAllDevices()
+      Alert.alert("Scan Complete", "BLE device scan tamamlandı. Console'u kontrol edin.")
+    } catch (error) {
+      console.error('Scan error:', error)
+      Alert.alert("Scan Error", "BLE scan hatası: " + (error instanceof Error ? error.message : 'Unknown error'))
+    }
+  }
+
+  const handleTestESP32 = async () => {
+    try {
+      console.log('🔍 ESP32 bağlantısı test ediliyor...')
+      setStatus("🔍 Testing ESP32 connection...")
+      const found = await bluetoothService.testESP32Connection()
+      if (found) {
+        setStatus("✅ ESP32 found!")
+        Alert.alert("ESP32 Found", "ESP32 cihazı başarıyla bulundu!")
+      } else {
+        setStatus("❌ ESP32 not found")
+        Alert.alert("ESP32 Not Found", "ESP32 cihazı bulunamadı. ESP32'nin açık olduğundan emin olun.")
+      }
+    } catch (error) {
+      console.error('ESP32 test error:', error)
+      setStatus("❌ ESP32 test failed")
+      Alert.alert("Test Error", "ESP32 test hatası: " + (error instanceof Error ? error.message : 'Unknown error'))
+    }
+  }
+
+  const handleAlternativeAdvertising = async () => {
+    try {
+      console.log('🔄 Alternative advertising başlatılıyor...')
+      const success = await bluetoothService.startAlternativeAdvertising("TEST123")
+      if (success) {
+        Alert.alert("Alternative Advertising", "Alternative advertising başlatıldı!")
+        setStatus("🔄 Alternative advertising active")
+      } else {
+        Alert.alert("Advertising Failed", "Alternative advertising başlatılamadı.")
+      }
+    } catch (error) {
+      console.error('Alternative advertising error:', error)
+      Alert.alert("Advertising Error", "Alternative advertising hatası: " + (error instanceof Error ? error.message : 'Unknown error'))
     }
   }
 
@@ -200,19 +273,19 @@ export const AttendScreen: FC<AttendScreenProps> = observer(function AttendScree
               <Text style={$debugTitle}>Debug Functions</Text>
               <TouchableOpacity 
                 style={$debugButton} 
-                onPress={() => bluetoothService.scanAllDevices()}
+                onPress={handleScanAllDevices}
               >
                 <Text style={$debugButtonText}>Scan All BLE Devices</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={$debugButton} 
-                onPress={() => bluetoothService.testESP32Connection()}
+                onPress={handleTestESP32}
               >
                 <Text style={$debugButtonText}>Test ESP32 Connection</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={$debugButton} 
-                onPress={() => bluetoothService.startAlternativeAdvertising("TEST123")}
+                onPress={handleAlternativeAdvertising}
               >
                 <Text style={$debugButtonText}>Alternative Advertising</Text>
               </TouchableOpacity>

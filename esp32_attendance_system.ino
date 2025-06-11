@@ -20,12 +20,12 @@ std::map<String, String> detectedStudents;
 std::map<String, unsigned long> lastSeenTime; // Son görülme zamanları
 std::map<String, int> signalStrength;         // RSSI değerleri
 
-// BLE tarayıcı callback'i - İyileştirilmiş
+// BLE tarayıcı callback'i - İyileştirilmiş ve düzeltilmiş
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
 {
     void onResult(BLEAdvertisedDevice advertisedDevice)
     {
-        String deviceAddress = advertisedDevice.getAddress().toString();
+        String deviceAddress = advertisedDevice.getAddress().toString().c_str();
         String deviceName = "";
         String studentId = "";
         int rssi = advertisedDevice.getRSSI();
@@ -55,11 +55,11 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
                           deviceName.c_str(), studentId.c_str(), rssi);
         }
 
-        // Method 2: Service UUID ile kontrol
+        // Method 2: Service UUID ile kontrol - DÜZELTİLDİ
         if (!isStudentDevice && advertisedDevice.haveServiceUUID())
         {
-            BLEUUID serviceUUID = advertisedDevice.getServiceUUID();
-            if (serviceUUID.equals(BLEUUID(SERVICE_UUID)))
+            // ESP32 BLE kütüphanesinde doğru metod
+            if (advertisedDevice.isAdvertisingService(BLEUUID(SERVICE_UUID)))
             {
                 studentId = "UUID_DETECTED"; // UUID ile algılanan
                 isStudentDevice = true;
@@ -68,15 +68,19 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
             }
         }
 
-        // Method 3: Manufacturer data ile kontrol
+        // Method 3: Manufacturer data ile kontrol - DÜZELTİLDİ
         if (!isStudentDevice && advertisedDevice.haveManufacturerData())
         {
             std::string manData = advertisedDevice.getManufacturerData();
-            if (manData.length() > 0)
+            if (manData.length() > 0 && manData.length() < 20)
             {
-                // Manufacturer data'dan student ID çıkarmaya çalış
-                String manDataStr = String(manData.c_str());
-                if (manDataStr.length() > 0 && manDataStr.length() < 20)
+                // Manufacturer data'yı String'e güvenli şekilde çevir
+                char manDataBuffer[21]; // 20 + null terminator
+                memset(manDataBuffer, 0, sizeof(manDataBuffer));
+                memcpy(manDataBuffer, manData.c_str(), min((int)manData.length(), 20));
+                String manDataStr = String(manDataBuffer);
+
+                if (manDataStr.length() > 0)
                 {
                     studentId = manDataStr;
                     isStudentDevice = true;
@@ -146,15 +150,16 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *pCharacteristic)
     {
-        String value = pCharacteristic->getValue().c_str();
+        std::string value = pCharacteristic->getValue();
         if (value.length() > 0)
         {
-            Serial.printf("📝 Direct connection ile öğrenci kimliği alındı: %s\n", value.c_str());
+            String studentId = String(value.c_str());
+            Serial.printf("📝 Direct connection ile öğrenci kimliği alındı: %s\n", studentId.c_str());
 
             // Bu metod ile gelen veriyi de kaydet
             String timestamp = String(millis());
-            detectedStudents["DIRECT_" + timestamp] = value;
-            Serial.printf("💾 Direct student kaydedildi: %s\n", value.c_str());
+            detectedStudents["DIRECT_" + timestamp] = studentId;
+            Serial.printf("💾 Direct student kaydedildi: %s\n", studentId.c_str());
         }
     }
 };
@@ -188,7 +193,7 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("==============================================");
-    Serial.println("🎓 ESP32 YOKLAMA SİSTEMİ v2.0 BAŞLATILIYOR...");
+    Serial.println("🎓 ESP32 YOKLAMA SİSTEMİ v2.1 BAŞLATILIYOR...");
     Serial.println("==============================================");
 
     // BLE cihazını başlat
@@ -209,7 +214,7 @@ void setup()
         BLECharacteristic::PROPERTY_READ |
             BLECharacteristic::PROPERTY_WRITE);
     pCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
-    pCharacteristic->setValue("ESP32 Yoklama Sistemi Hazır v2.0");
+    pCharacteristic->setValue("ESP32 Yoklama Sistemi Hazır v2.1");
 
     // Servisi başlat
     pService->start();
